@@ -30,4 +30,4 @@ export interface TableOutput {
   rowKey: string
 }
 
-export type OutputData = SingleOutput | SeriesOutput | MultiSeriesOutput | TopOutput | TableOutput
+export type OutputData = SingleOutput | SeriesOutput | MultiSeriesOutput | TopOutput | TableOutput | null

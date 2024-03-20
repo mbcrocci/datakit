@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { calculateSingle, calculateSingleElement } from '../../src/calculations/single'
+import { calculateSimpleSingleElement, calculateSingle, calculateSingleElement } from '../../src/calculations/single'
 import type { DataElement, InputData } from '../../src/input'
 import type { OutputData } from '../../src/output'
 
@@ -62,6 +62,50 @@ describe('element operations', () => {
 
     for (const { elements, expected } of data)
       expect(calculateSingleElement ('min', elements.map(e => ({ value: e } as DataElement)))).toBe(expected)
+  })
+  it('add', () => {
+    const data = [
+      { elements: [1, 2], expected: 3 },
+    ]
+
+    for (const { elements, expected } of data)
+      expect(calculateSimpleSingleElement ('add', ({ valueLeft: elements[0], valueRight: elements[1] } as DataElement))).toBe(expected)
+  })
+
+  it('sub', () => {
+    const data = [
+      { elements: [2, 1], expected: 1 },
+    ]
+
+    for (const { elements, expected } of data)
+      expect(calculateSimpleSingleElement ('sub', ({ valueLeft: elements[0], valueRight: elements[1] } as DataElement))).toBe(expected)
+  })
+
+  it('div', () => {
+    const data = [
+      { elements: [2, 2], expected: 1 },
+    ]
+
+    for (const { elements, expected } of data)
+      expect(calculateSimpleSingleElement ('div', ({ valueLeft: elements[0], valueRight: elements[1] } as DataElement))).toBe(expected)
+  })
+
+  it('mul', () => {
+    const data = [
+      { elements: [1, 2], expected: 2 },
+    ]
+
+    for (const { elements, expected } of data)
+      expect(calculateSimpleSingleElement ('mul', ({ valueLeft: elements[0], valueRight: elements[1] } as DataElement))).toBe(expected)
+  })
+
+  it('rule-of-three', () => {
+    const data = [
+      { elements: [3, 2, 1], expected: 6 },
+    ]
+
+    for (const { elements, expected } of data)
+      expect(calculateSimpleSingleElement ('rule-of-three', ({ valueLeft: elements[0], valueRight: elements[1], valueDivisor: elements[2] } as DataElement))).toBe(expected)
   })
 })
 

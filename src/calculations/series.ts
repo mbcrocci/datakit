@@ -25,14 +25,14 @@ export function calculateSeries(
   }
 }
 
-function calculateSeriesSeries(
+export function calculateSeriesSeries(
   operation: Operation,
   data: SeriesInputData,
 ): OutputData {
   return calculateSeriesElement(operation, data.data)
 }
 
-function calculateSeriesGrouped(
+export function calculateSeriesGrouped(
   operation: Operation,
   data: GroupedInputData,
 ): OutputData {

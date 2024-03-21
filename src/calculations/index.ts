@@ -18,7 +18,7 @@ export function calculate(
       return calculateSeries(calculation.operation, data)
 
     case 'static':
-      return calculateStatic(data)
+      return calculateStatic(data, calculation)
     default:
       return {
         type: 'single',

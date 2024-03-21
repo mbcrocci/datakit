@@ -1,13 +1,9 @@
-export type InputData = SeriesInputData | GroupedInputData | StaticInputData
+export type InputData = SeriesInputData | GroupedInputData
 
 export interface DataElement {
   value: number
   timestamp: number
   metadata: unknown
-}
-export interface StaticInputData {
-  type: 'static'
-  data: DataElement
 }
 
 export interface SeriesInputData {

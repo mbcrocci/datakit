@@ -1,8 +1,3 @@
-export interface StaticOutput {
-  type: 'static'
-  value: number
-}
-
 export interface SingleOutput {
   type: 'single'
   value: number
@@ -35,4 +30,4 @@ export interface TableOutput {
   rowKey: string
 }
 
-export type OutputData = SingleOutput | SeriesOutput | MultiSeriesOutput | TopOutput | TableOutput | StaticOutput
+export type OutputData = SingleOutput | SeriesOutput | MultiSeriesOutput | TopOutput | TableOutput

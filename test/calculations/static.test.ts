@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { calculateSingle, calculateSingleElement } from '../../src/calculations/single'
-import type { DataElement, InputData } from '../../src/input'
-import type { OutputData, SingleOutput } from '../../src/output'
+import type { InputData } from '../../src/input'
+import type { SingleOutput } from '../../src/output'
 import { calculateStatic } from '../../src/calculations/static'
 
 describe('element operations', () => {

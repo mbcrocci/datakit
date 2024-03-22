@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { calculateSingle, calculateSingleElement } from '../../src/calculations/single'
 import type { DataElement, InputData } from '../../src/input'
-import type { OutputData, SingleOutput } from '../../src/output'
-import { calculateStatic } from '../../src/calculations/static'
+import type { OutputData } from '../../src/output'
 
 describe('element operations', () => {
   it('count', () => {

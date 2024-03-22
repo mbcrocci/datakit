@@ -1,9 +1,11 @@
 import type { InputData } from '../input'
 import type { OutputData } from '../output'
+import type { ReferenceCalculation } from './reference'
+import { calculateReference } from './reference'
 import { type SeriesCalculation, calculateSeries } from './series'
 import { type SingleCalculation, calculateSingle } from './single'
 
-export type Calculation = SingleCalculation | SeriesCalculation
+export type Calculation = SingleCalculation | SeriesCalculation | ReferenceCalculation
 
 export function calculate(
   calculation: Calculation,
@@ -15,6 +17,9 @@ export function calculate(
 
     case 'series':
       return calculateSeries(calculation.operation, data)
+
+    case 'reference':
+      return calculateReference(data, calculation)
 
     default:
       return {

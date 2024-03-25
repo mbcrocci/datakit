@@ -1,5 +1,5 @@
 import type { StorageAdapter } from '..'
-import type { InputData, ReferenceInputData } from '../input'
+import type { ReferenceInputData } from '../input'
 import type { SingleOutput } from '../output'
 
 export interface ReferenceCalculation {

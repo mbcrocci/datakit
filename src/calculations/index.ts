@@ -1,7 +1,5 @@
-import { measureMemory } from 'node:vm'
 import type { InputData } from '../input'
 import type { OutputData } from '../output'
-import { MemoryStorageAdapter } from '../storage/memory'
 import type { StorageAdapter } from '..'
 import type { ReferenceCalculation } from './reference'
 import { calculateReference } from './reference'

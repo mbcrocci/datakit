@@ -12,6 +12,10 @@ export function calculateSingle(operation: Operation, data: InputData): SingleOu
   switch (data.type) {
     case 'series': return calculateSingleSeries(operation, data)
     case 'grouped' : return calculateSingleGrouped(operation, data)
+    default: return {
+      type: 'single',
+      value: 0,
+    }
   }
 }
 

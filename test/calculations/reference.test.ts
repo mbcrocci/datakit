@@ -1,17 +1,33 @@
 import { describe, expect, it } from 'vitest'
-import { calculateSingle, calculateSingleElement } from '../../src/calculations/single'
-import type { DataElement, InputData } from '../../src/input'
-import type { OutputData } from '../../src/output'
+import type { ReferenceCalculation } from '../../src/calculations/reference'
+import { calculateReference } from '../../src/calculations/reference'
+import { MemoryStorageAdapter } from '../../src/storage/memory'
 
-describe('element operations', () => {
-  it('count', () => {
-    const data = [
-      { elements: [], expected: 0 },
-      { elements: [1, 2], expected: 2 },
-      { elements: [1, 2, 3], expected: 3 },
-    ]
-
-    for (const { elements, expected } of data)
-      expect(calculateSingleElement ('count', elements.map(e => ({ value: e } as DataElement)))).toBe(expected)
+describe('save to memory', () => {
+  const storage = new MemoryStorageAdapter()
+  storage.set('test', {
+    type: 'reference',
+    key: 'test',
+    data: {
+      value: 3,
+      timestamp: 111111,
+      metadata: {},
+    },
+  })
+  it('store value', () => {
+    expect(
+      calculateReference(
+        {
+          type: 'reference',
+          key: 'test',
+        } as ReferenceCalculation,
+        storage,
+      ),
+    ).toStrictEqual(
+      {
+        type: 'single',
+        value: 3,
+      },
+    )
   })
 })

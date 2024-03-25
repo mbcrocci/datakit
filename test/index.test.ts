@@ -32,7 +32,7 @@ class TestDataAdapter implements SourceAdapter, OutputAdapter, DataObserver {
     }
   }
 
-  update(data: TestData): void {
+  update(data: unknown): void {
     // eslint-disable-next-line no-console
     console.log('update', data)
   }

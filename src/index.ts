@@ -100,7 +100,7 @@ export class DataEngine {
       this.storage!.set(inputKey, data)
 
       // perform calculations
-      const result = calculate(config.calculation, data)
+      const result = calculate(config.calculation, data, this.storage)
 
       // Store result of calculating
       const outputKey = `output-${config.key}`

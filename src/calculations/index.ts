@@ -1,14 +1,18 @@
 import type { InputData } from '../input'
 import type { OutputData } from '../output'
+import type { StorageAdapter } from '..'
 import { type SeriesCalculation, calculateSeries } from './series'
 import { type SingleCalculation, calculateSingle } from './single'
 import { type StaticCalculation, calculateStatic } from './static'
 
-export type Calculation = SingleCalculation | SeriesCalculation | StaticCalculation
+import { type ReferenceCalculation, calculateReference } from './reference'
+
+export type Calculation = SingleCalculation | SeriesCalculation | StaticCalculation | ReferenceCalculation
 
 export function calculate(
   calculation: Calculation,
   data: InputData,
+  storage?: StorageAdapter,
 ): OutputData {
   switch (calculation.type) {
     case 'single':
@@ -19,6 +23,10 @@ export function calculate(
 
     case 'static':
       return calculateStatic(data, calculation)
+
+    case 'reference':
+      return calculateReference(calculation, storage)
+
     default:
       return {
         type: 'single',

@@ -29,6 +29,12 @@ export function calculateTop(
       return calculateTopSeries(calculation, data)
     case 'grouped':
       return calculateTopGrouped(calculation, data)
+    default:
+      return {
+        type: 'top',
+        values: [],
+        metadata: [],
+      }
   }
 }
 

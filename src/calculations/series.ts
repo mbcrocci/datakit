@@ -22,6 +22,11 @@ export function calculateSeries(
       return calculateSeriesSeries(operation, data)
     case 'grouped':
       return calculateSeriesGrouped(operation, data)
+    default:
+      return {
+        type: 'single',
+        value: 0,
+      }
   }
 }
 

@@ -1,4 +1,4 @@
-import type { OutputData, SingleOutput } from '../output'
+import type { SingleOutput } from '../output'
 import type { StorageAdapter } from '..'
 import type { InputData } from '../input'
 import { type ReferenceCalculation, calculateReference } from './reference'

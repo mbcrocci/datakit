@@ -6,8 +6,10 @@ import { type SingleCalculation, calculateSingle } from './single'
 import { type StaticCalculation, calculateStatic } from './static'
 
 import { type ReferenceCalculation, calculateReference } from './reference'
+import type { TreeCalculation } from './tree'
+import { calculateNode } from './tree'
 
-export type Calculation = SingleCalculation | SeriesCalculation | StaticCalculation | ReferenceCalculation
+export type Calculation = SingleCalculation | SeriesCalculation | StaticCalculation | ReferenceCalculation | TreeCalculation
 
 export function calculate(
   calculation: Calculation,
@@ -26,6 +28,9 @@ export function calculate(
 
     case 'reference':
       return calculateReference(calculation, storage)
+
+    case 'tree':
+      return calculateNode(calculation, storage, data)
 
     default:
       return {

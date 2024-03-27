@@ -50,7 +50,7 @@ export function calculateTopGrouped(
   }
 }
 
-function calculateTopElement(
+export function calculateTopElement(
   calculation: TopCalculation,
   data: DataElement[],
 ): TopOutput {
@@ -64,7 +64,7 @@ function calculateTopElement(
   return {
     type: 'top',
     values: topN.map(e => e.value),
-    metadata: topN.map(e => e.metadata),
+    metadata: topN.map(e => e.metadata) ?? [],
   }
 }
 

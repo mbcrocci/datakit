@@ -10,7 +10,7 @@ import {
 import type { Input } from '../src/config'
 import type { InputData } from '../src/input'
 import type { OutputData } from '../src/output'
-import { MemoryStorageAdapter } from '../src/storage/memory'
+import { memoryAdapter } from '../src/storage/memory'
 
 function createMockSourceAdapter() {
   const data: Record<string, InputData> = {}
@@ -59,7 +59,7 @@ describe('element operations', () => {
   let storage: StorageAdapter
   beforeEach(() => {
     source = createMockSourceAdapter()
-    storage = new MemoryStorageAdapter()
+    storage = memoryAdapter()
   })
 
   it('static', async () => {
@@ -108,7 +108,7 @@ describe('tree node operations', () => {
 
   beforeEach(() => {
     source = createMockSourceAdapter()
-    storage = new MemoryStorageAdapter()
+    storage = memoryAdapter()
   })
 
   it('tree static + static', async () => {
@@ -180,7 +180,7 @@ describe('tree calculations', () => {
 
   beforeEach(() => {
     source = createMockSourceAdapter()
-    storage = new MemoryStorageAdapter()
+    storage = memoryAdapter()
   })
 
   it('tree static with reference', async () => {

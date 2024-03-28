@@ -3,7 +3,7 @@ import { calculateSeries } from './calculations/series'
 import type { Calculation, Input } from './config'
 import type { InputData } from './input'
 import type { OutputData, SingleOutput } from './output'
-import { MemoryStorageAdapter } from './storage/memory'
+import { memoryAdapter } from './storage/memory'
 import { calculateNode } from './calculations/tree'
 
 export interface SourceAdapter {
@@ -102,7 +102,7 @@ export function createDataEngine({ source, output, storage }: {
   output: OutputAdapter
   storage?: StorageAdapter
 }) {
-  storage ??= new MemoryStorageAdapter()
+  storage ??= memoryAdapter()
 
   return {
     calculate: async (calculation: Calculation) => {

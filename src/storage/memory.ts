@@ -1,13 +1,15 @@
 import type { StorageAdapter, StorageData } from '..'
 
-export class MemoryStorageAdapter implements StorageAdapter {
-  data = new Map<string, StorageData>()
+export function memoryAdapter(): StorageAdapter {
+  const data = new Map<string, StorageData>()
 
-  get(key: string): StorageData | undefined {
-    return this.data.get(key)
+  const get = (key: string): StorageData | undefined => {
+    return data.get(key)
   }
 
-  set(key: string, value: StorageData): void {
-    this.data.set(key, value)
+  const set = (key: string, value: StorageData): void => {
+    data.set(key, value)
   }
+
+  return { get, set }
 }

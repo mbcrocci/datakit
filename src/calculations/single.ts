@@ -1,17 +1,18 @@
 import type { DataElement, GroupedInputData, InputData, SeriesInputData } from '../input'
 import type { SingleOutput } from '../output'
 
-export interface SingleCalculation {
-  type: 'single'
-  operation: 'sum' | 'avg' | 'max' | 'min' | 'count'
-}
+export type SingleOperation = 'sum' | 'avg' | 'max' | 'min' | 'count'
 
-type Operation = SingleCalculation['operation']
+type Operation = SingleOperation
 
 export function calculateSingle(operation: Operation, data: InputData): SingleOutput {
   switch (data.type) {
     case 'series': return calculateSingleSeries(operation, data)
     case 'grouped' : return calculateSingleGrouped(operation, data)
+    default: return {
+      type: 'single',
+      value: 0,
+    }
   }
 }
 

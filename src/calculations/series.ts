@@ -6,12 +6,8 @@ import type {
 } from '../input'
 import type { OutputData, SeriesOutput } from '../output'
 
-export interface SeriesCalculation {
-  type: 'series'
-  operation?: 'sum'
-}
-
-type Operation = SeriesCalculation['operation']
+export type SeriesOperation = 'sum'
+type Operation = SeriesOperation
 
 export function calculateSeries(
   operation: Operation,
@@ -22,6 +18,11 @@ export function calculateSeries(
       return calculateSeriesSeries(operation, data)
     case 'grouped':
       return calculateSeriesGrouped(operation, data)
+    default:
+      return {
+        type: 'single',
+        value: 0,
+      }
   }
 }
 

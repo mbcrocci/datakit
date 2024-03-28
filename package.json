@@ -1,18 +1,18 @@
 {
-  "name": "data-kit",
+  "name": "@launchsoft/datakit",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packageManager": "pnpm@8.14.0",
   "description": "_description_",
-  "author": "Anthony Fu <anthonyfu117@hotmail.com>",
+  "author": "Maurizio Crocci <mbcrocci@gmail.com>",
   "license": "MIT",
-  "funding": "https://github.com/sponsorsmbcrocci",
-  "homepage": "https://github.commbcrocci/datakit#readme",
+  "funding": "https://github.com/sponsors/mbcrocci",
+  "homepage": "https://github.com/mbcrocci/datakit#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.commbcrocci/datakit.git"
+    "url": "git+https://github.com/mbcrocci/datakit.git"
   },
-  "bugs": "https://github.commbcrocci/datakit/issues",
+  "bugs": "https://github.com/mbcrocci/datakit/issues",
   "keywords": [],
   "sideEffects": false,
   "exports": {

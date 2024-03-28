@@ -1,4 +1,4 @@
-export type InputData = SeriesInputData | GroupedInputData | ReferenceInputData
+export type InputData = SeriesInputData | GroupedInputData
 
 export interface DataElement {
   value: number
@@ -17,10 +17,4 @@ export interface GroupedInputData {
     key: string
     data: DataElement[]
   }[]
-}
-
-export interface ReferenceInputData {
-  type: 'reference'
-  key: string
-  data: DataElement
 }

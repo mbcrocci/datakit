@@ -1,69 +1,25 @@
 import type { SingleOutput } from '../output'
-import type { StorageAdapter } from '..'
-import type { InputData } from '../input'
-import { type ReferenceCalculation, calculateReference } from './reference'
-import { type SingleCalculation, calculateSingle } from './single'
-import type { StaticCalculation } from './static'
-import { calculateStatic } from './static'
 
-export interface TreeCalculation {
+export type NodeOperation = 'add' | 'sub' | 'div' | 'mul'
+
+export interface NodeCalculation {
   type: 'tree'
-  left: NodeCalculation
-  right: NodeCalculation
-  operation: 'add' | 'sub' | 'div' | 'mul'
+  left: number
+  right: number
+  operation: NodeOperation
 }
 
-export type NodeCalculation =
-  | TreeCalculation
-  | ReferenceCalculation
-  | SingleCalculation
-  | StaticCalculation
-
-export function calculateNode(calc: TreeCalculation, storage?: StorageAdapter, input?: InputData): SingleOutput {
-  let value = 0
-  const left = getValueByType(calc.left, storage, input)
-  const right = getValueByType(calc.right, storage, input)
-
+export function calculateNode(calc: NodeCalculation): SingleOutput {
   switch (calc.operation) {
     case 'add':
-      value = calculateAdd(left, right)
-      break
+      return { type: 'single', value: calculateAdd(calc.left, calc.right) }
     case 'sub':
-      value = calculateSub(left, right)
-      break
+      return { type: 'single', value: calculateSub(calc.left, calc.right) }
     case 'div':
-      value = calculateDiv(left, right)
-      break
+      return { type: 'single', value: calculateDiv(calc.left, calc.right) }
     case 'mul':
-      value = calculateMul(left, right)
-      break
+      return { type: 'single', value: calculateMul(calc.left, calc.right) }
   }
-
-  return {
-    type: 'single',
-    value,
-  }
-}
-
-function getValueByType(node: NodeCalculation, storage?: StorageAdapter, input?: InputData): number {
-  let value = 0
-  switch (node.type) {
-    case 'tree':
-      value = (calculateNode(node as TreeCalculation, storage) as SingleOutput).value
-      break
-    case 'reference':
-      value = (calculateReference(node as ReferenceCalculation, storage) as SingleOutput).value
-      break
-    case 'single':
-      if (input !== undefined)
-        value = calculateSingle(node.operation, input).value
-
-      break
-    case 'static':
-      value = (calculateStatic({} as InputData, node as StaticCalculation) as SingleOutput).value
-      break
-  }
-  return value
 }
 
 export function calculateAdd(left: number, right: number): number {

@@ -1,44 +1,13 @@
-import { type Calculation, calculate } from './calculations'
+import { calculateSingle } from './calculations/single'
+import { calculateSeries } from './calculations/series'
+import type { Calculation, Input } from './config'
 import type { InputData } from './input'
-import type { OutputData } from './output'
+import type { OutputData, SingleOutput } from './output'
 import { MemoryStorageAdapter } from './storage/memory'
-
-export interface MetricConfig {
-  key: string
-  input: {
-    filter: {
-      field: string
-      value: string | number | boolean | null
-      opearation:
-        | ''
-        | 'eq'
-        | 'equal'
-        | 'neq'
-        | 'or'
-        | 'and'
-        | 'contains'
-        | 'exists'
-        | 'nexists'
-      children: MetricConfig['input']['filter'][]
-    }
-    orderBy: string[]
-    groupBy: string[]
-    range: {
-      start: Date
-      end: Date
-    }
-  }
-  calculation: Calculation
-}
-
-export type Input = MetricConfig['input']
+import { calculateNode } from './calculations/tree'
 
 export interface SourceAdapter {
   fetch: (input: Input) => Promise<InputData>
-}
-
-export interface DataObserver {
-  update: (data: unknown) => void
 }
 
 export type StorageData = InputData | OutputData
@@ -52,63 +21,99 @@ export interface OutputAdapter {
   format: (output: OutputData) => unknown
 }
 
-export class DataEngine {
-  constructor(
-    private source: SourceAdapter,
-    private output: OutputAdapter,
-    private storage?: StorageAdapter,
-  ) {
-    if (!storage)
-      this.storage = new MemoryStorageAdapter()
+function hashInput(input: Input): string {
+  const json = JSON.stringify(input) // TODO: use a faster library
+  return btoa(json)
+}
+
+// Fetch data based on input
+async function fetchData(input: Input, source: SourceAdapter) {
+  const data = await source.fetch(input)
+  if (!data)
+    return
+
+  return data
+}
+
+export function outputKey(key: string) {
+  return `output-${key}`
+}
+
+async function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+async function fetchFromStorage(storage: StorageAdapter, key: string) {
+  const okey = outputKey(key)
+  let data = storage.get(okey)
+
+  let retries = 0
+  let interval = 500
+  while (!data && retries < 10) {
+    await sleep(interval)
+
+    data = storage.get(okey)
+
+    interval = interval - (interval * 0.2)
+    retries++
   }
 
-  private observers = new Map<string, DataObserver[]>()
+  return data as OutputData
+}
 
-  private subscribe(key: string, observer: DataObserver) {
-    if (!this.observers.has(key)) {
-      this.observers.set(key, [observer])
-      return
-    }
+export async function calcByType(calculation: Calculation, source: SourceAdapter, storage: StorageAdapter): Promise<OutputData | undefined> {
+  if (calculation.type === 'static')
+    return { type: 'single', value: calculation.value } satisfies SingleOutput
 
-    const observers = this.observers.get(key)
-    this.observers.set(key, observers!.concat(observer))
+  if (calculation.type === 'reference')
+    return fetchFromStorage(storage!, calculation.reference)
+
+  if (calculation.type === 'tree') {
+    const left = await calcByType(calculation.left, source, storage)
+    if (!left)
+      return undefined
+
+    const right = await calcByType(calculation.right, source, storage)
+    if (!right)
+      return undefined
+
+    if (left.type !== 'single' || right.type !== 'single')
+      return undefined
+
+    return calculateNode({ type: 'tree', left: left.value, right: right.value, operation: calculation.operation })
   }
 
-  private publish(key: string, data: unknown) {
-    const observers = this.observers.get(key)
-    if (observers)
-      for (const o of observers) o.update(data)
-  }
+  const data = await fetchData(calculation.input, source)
 
-  private hashInput(input: Input): string {
-    const json = JSON.stringify(input) // TODO: use a faster library
-    return btoa(json)
-  }
+  // Store fetched data
+  const inputHash = hashInput(calculation.input)
+  const inputKey = `${calculation.key}-${inputHash}`
+  storage!.set(inputKey, data!)
 
-  attach(observer: DataObserver, config: MetricConfig) {
-    this.subscribe(config.key, observer);
+  if (calculation.type === 'single')
+    return calculateSingle(calculation.operation, data!)
 
-    (async () => {
-      // Fetch data based on input
-      const data = await this.source.fetch(config.input)
-      if (!data)
-        return
+  if (calculation.type === 'series')
+    return calculateSeries(calculation.operation, data!)
+}
 
-      // Store fetched data
-      const inputHash = this.hashInput(config.input)
-      const inputKey = `${config.key}-${inputHash}`
-      this.storage!.set(inputKey, data)
+export function createDataEngine({ source, output, storage }: {
+  source: SourceAdapter
+  output: OutputAdapter
+  storage?: StorageAdapter
+}) {
+  storage ??= new MemoryStorageAdapter()
 
-      // perform calculations
-      const result = calculate(config.calculation, data, this.storage)
+  return {
+    calculate: async (calculation: Calculation) => {
+      const result = await calcByType(calculation, source, storage!)
+      if (!result)
+        throw new Error('can\'t generate result')
 
       // Store result of calculating
-      const outputKey = `output-${config.key}`
-      this.storage!.set(outputKey, result)
+      storage!.set(outputKey(calculation.key), result)
 
-      // transform output and publish
-      const output = this.output.format(result)
-      this.publish(config.key, output)
-    })()
+      return output.format(result)
+    },
   }
 }

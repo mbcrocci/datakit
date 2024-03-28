@@ -1,5 +1,5 @@
 {
-  "name": "@launchsoft/datakit",
+  "name": "datamorph",
   "type": "module",
   "version": "1.0.1",
   "packageManager": "pnpm@8.14.0",
@@ -7,12 +7,12 @@
   "author": "Maurizio Crocci <mbcrocci@gmail.com>",
   "license": "MIT",
   "funding": "https://github.com/sponsors/mbcrocci",
-  "homepage": "https://github.com/mbcrocci/datakit#readme",
+  "homepage": "https://github.com/mbcrocci/datamorph#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mbcrocci/datakit.git"
+    "url": "git+https://github.com/mbcrocci/datamorph.git"
   },
-  "bugs": "https://github.com/mbcrocci/datakit/issues",
+  "bugs": "https://github.com/mbcrocci/datamorph/issues",
   "keywords": [],
   "sideEffects": false,
   "exports": {

@@ -8,12 +8,19 @@ import type { InputData } from '../input'
  *
  * You can also pass a `transformer` if the response data is not in `InputData` format.
  */
-export function fetchAdapter(url: string, headers?: RequestInit['headers'], transformer?: (d: unknown) => InputData): SourceAdapter {
+export function fetchAdapter(
+  url: string,
+  headers?: RequestInit['headers'],
+  transformer?: (d: unknown) => InputData,
+): SourceAdapter {
   return {
     fetch: async (input: Input) => {
       const res = await fetch(url, {
         method: 'POST',
-        headers,
+        headers: {
+          'Content-Type': 'application/json',
+          ...headers,
+        },
         body: JSON.stringify(input),
       })
       const data = await res.json()

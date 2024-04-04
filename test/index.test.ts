@@ -1,16 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import type {
-  StorageAdapter,
-} from '../src'
 import {
-  calcByType,
   createDataEngine,
-  outputKey,
 } from '../src'
-import type { Input } from '../src/config'
 import type { InputData } from '../src/input'
 import type { OutputData } from '../src/output'
 import { memoryAdapter } from '../src/storage/memory'
+import type { StorageAdapter } from '../src/adapters'
+import { calcByType, outputKey } from '../src/engine'
 
 function createMockSourceAdapter() {
   const data: Record<string, InputData> = {}
@@ -19,8 +15,8 @@ function createMockSourceAdapter() {
     data[key] = input
   }
 
-  const fetch = async (input: Input): Promise<InputData> => {
-    return data[input.filter.field]
+  async function fetch(input: { key: string }): Promise<InputData> {
+    return data[input.key]
   }
 
   return {
@@ -45,7 +41,8 @@ describe('should return data', () => {
   it('should return data', async () => {
     const sa = createMockSourceAdapter()
     const oa = createMockOutputAdapter()
-    const engine = createDataEngine({ source: sa, output: oa })
+    const storage = memoryAdapter()
+    const engine = createDataEngine({ source: sa, output: oa, storage })
 
     const output = await engine.calculate({ key: 'test', type: 'static', value: 123 })
 
@@ -89,14 +86,12 @@ describe('element operations', () => {
 
   it('single', async () => {
     source.setData('inputKey', { type: 'series', data: [{ value: 10, timestamp: 0, metadata: {} }] })
-    const result = await calcByType({ key: 'singleTest', type: 'single', input: {
-      filter: {
-        field: 'inputKey',
-        value: null,
-        operation: '',
-        children: [],
-      } as Input['filter'],
-    } as Input, operation: 'sum' }, source, storage)
+    const result = await calcByType({
+      key: 'singleTest',
+      type: 'single',
+      input: { key: 'inputKey' },
+      operation: 'sum',
+    }, source, storage)
 
     expect(result).toStrictEqual({ type: 'single', value: 10 })
   })
@@ -230,7 +225,7 @@ describe('tree calculations', () => {
         type: 'tree',
         operation: 'add',
         left: { key: 'teste', type: 'static', value: 7 },
-        right: { key: 'teste', type: 'single', operation: 'sum', input: { filter: { field: 'ref1' } } as Input },
+        right: { key: 'teste', type: 'single', operation: 'sum', input: { key: 'ref1' } },
       },
       source,
       storage,

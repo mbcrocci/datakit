@@ -1,4 +1,4 @@
-import type { StorageAdapter, StorageData } from '..'
+import type { StorageAdapter, StorageData } from '../adapters'
 
 export function memoryAdapter(): StorageAdapter {
   const data = new Map<string, StorageData>()
